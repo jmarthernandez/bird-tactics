@@ -1,0 +1,5 @@
+{
+  "board": { "width": 8, "height": 8 },
+  "turnMode": "allUnits",
+  "startingTeam": ["sparrow", "hawk", "owl", "crow"]
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "sparrow",
+    "name": "Sparrow",
+    "icon": "🐦",
+    "description": "Quick and flexible. Hops 1-2 tiles in any direction, but must go around trees and birds.",
+    "movement": [
+      { "kind": "step", "directions": "all", "maxSteps": 2, "canJumpOver": false }
+    ],
+    "stats": { "health": 2, "attack": 1 },
+    "abilities": []
+  },
+  {
+    "id": "hawk",
+    "name": "Hawk",
+    "icon": "🦅",
+    "description": "Dives in straight lines (up, down, left, right) up to 4 tiles. Blocked by trees and birds.",
+    "movement": [
+      { "kind": "slide", "directions": "orthogonal", "maxRange": 4, "canJumpOver": false }
+    ],
+    "stats": { "health": 3, "attack": 2 },
+    "abilities": []
+  },
+  {
+    "id": "owl",
+    "name": "Owl",
+    "icon": "🦉",
+    "description": "Glides diagonally up to 3 tiles. Blocked by trees and birds.",
+    "movement": [
+      { "kind": "slide", "directions": "diagonal", "maxRange": 3, "canJumpOver": false }
+    ],
+    "stats": { "health": 3, "attack": 1 },
+    "abilities": []
+  },
+  {
+    "id": "crow",
+    "name": "Crow",
+    "icon": "🐦‍⬛",
+    "description": "Jumps in an L-shape like a chess knight, flying over anything in the way.",
+    "movement": [
+      {
+        "kind": "leap",
+        "offsets": [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]],
+        "canJumpOver": true
+      }
+    ],
+    "stats": { "health": 2, "attack": 1 },
+    "abilities": []
+  }
+]
