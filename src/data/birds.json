@@ -2,49 +2,172 @@
   {
     "id": "sparrow",
     "name": "Sparrow",
-    "icon": "🐦",
-    "description": "Quick and flexible. Hops 1-2 tiles in any direction, but must go around trees and birds.",
-    "movement": [
-      { "kind": "step", "directions": "all", "maxSteps": 2, "canJumpOver": false }
-    ],
-    "stats": { "health": 2, "attack": 1 },
-    "abilities": []
+    "description": "Scrappy little hopper. Moves far on foot but can't fly over things. Pecks a neighbor and shoves it back a tile.",
+    "movement": [{ "kind": "step", "directions": "orthogonal", "maxSteps": 4, "canJumpOver": false }],
+    "attack": {
+      "name": "Peck Flurry",
+      "description": "Hit an adjacent bird for 1 and push it 1 tile away.",
+      "shout": "CHIRP!",
+      "style": "peck",
+      "targeting": "adjacent",
+      "damage": 1,
+      "push": true,
+      "splashDamage": 0,
+      "splashPush": false
+    },
+    "stats": { "health": 3, "forageBonus": 1 },
+    "nicknames": ["Pip", "Sir Pecksalot", "Crumb"],
+    "abilities": [],
+    "sprite": {
+      "mirror": true,
+      "palette": { "g": "#8d8a94", "b": "#a8693a", "d": "#5e3a1f", "c": "#efdcb4", "k": "#26201c", "e": "#111111", "y": "#e8b03a", "o": "#d9873a" },
+      "pixels": [
+        "................",
+        "................",
+        "................",
+        ".........gggg...",
+        "........gggggg..",
+        "........bcccegy.",
+        ".......bbcccccy.",
+        ".ddbbbbdbkkcc...",
+        ".ddbdbdbbkkccc..",
+        "..dbbdbdbbccccc.",
+        "...bbbbbbccccc..",
+        "....bbbbcccc....",
+        ".....cccccc.....",
+        "......o..o......",
+        ".....oo.oo......",
+        "................"
+      ]
+    }
   },
   {
     "id": "hawk",
     "name": "Hawk",
-    "icon": "🦅",
-    "description": "Dives in straight lines (up, down, left, right) up to 4 tiles. Blocked by trees and birds.",
-    "movement": [
-      { "kind": "slide", "directions": "orthogonal", "maxRange": 4, "canJumpOver": false }
-    ],
-    "stats": { "health": 3, "attack": 2 },
-    "abilities": []
+    "description": "Soars high over anything. Dive-bombs the first bird in a straight line, hitting hard and knocking it back.",
+    "movement": [{ "kind": "step", "directions": "orthogonal", "maxSteps": 3, "canJumpOver": true }],
+    "attack": {
+      "name": "Dive Bomb",
+      "description": "Hit the first bird in a line (up to 4 tiles) for 2 and push it 1 tile.",
+      "shout": "SKREEE!",
+      "style": "dive",
+      "targeting": "projectile",
+      "maxRange": 4,
+      "damage": 2,
+      "push": true,
+      "splashDamage": 0,
+      "splashPush": false
+    },
+    "stats": { "health": 4, "forageBonus": 0 },
+    "nicknames": ["Talonia", "Big Steve", "Swoopert"],
+    "abilities": [],
+    "sprite": {
+      "mirror": true,
+      "palette": { "H": "#4a2e1a", "h": "#8b5a2b", "c": "#f2e4c4", "s": "#b07a45", "y": "#f2c230", "e": "#111111", "x": "#2a1a10", "r": "#c0582c" },
+      "pixels": [
+        "................",
+        "..........hhh...",
+        ".........hhhhh..",
+        "........hhhxxhy.",
+        "........hcccehyy",
+        ".......hcccccc.y",
+        "....HHhhhcscsc..",
+        "..HHHHhhhcscsc..",
+        ".rHHHHHhhcscscc.",
+        "rrHHHHHhhccsccc.",
+        "rr.HHHHhhccccc..",
+        "r....HHhhcccc...",
+        "......hhcccc....",
+        ".......y..y.....",
+        "......yy.yy.....",
+        "................"
+      ]
+    }
   },
   {
     "id": "owl",
     "name": "Owl",
-    "icon": "🦉",
-    "description": "Glides diagonally up to 3 tiles. Blocked by trees and birds.",
-    "movement": [
-      { "kind": "slide", "directions": "diagonal", "maxRange": 3, "canJumpOver": false }
-    ],
-    "stats": { "health": 3, "attack": 1 },
-    "abilities": []
+    "description": "Slow, tough, and loud. Screeches so hard that every bird next to it (friend or foe) takes 1 and gets blown back.",
+    "movement": [{ "kind": "step", "directions": "orthogonal", "maxSteps": 2, "canJumpOver": true }],
+    "attack": {
+      "name": "Screech",
+      "description": "Hit all 4 neighbors for 1 and push them outward. Watch your friends!",
+      "shout": "WHO?!",
+      "style": "screech",
+      "targeting": "self",
+      "damage": 0,
+      "push": false,
+      "splashDamage": 1,
+      "splashPush": true
+    },
+    "stats": { "health": 5, "forageBonus": 0 },
+    "nicknames": ["Professor Hoot", "Mabel", "Dr. Whom"],
+    "abilities": [],
+    "sprite": {
+      "mirror": false,
+      "palette": { "F": "#7a5a3c", "f": "#ead6b0", "Y": "#f2c230", "e": "#111111", "o": "#d9873a", "w": "#d9c4a0", "s": "#9a7450", "y": "#e8b03a" },
+      "pixels": [
+        "................",
+        "...F........F...",
+        "...FF......FF...",
+        "...FFFFFFFFFF...",
+        "..FffffFFffffF..",
+        "..FfYYfFFfYYfF..",
+        "..FfYefFFfeYfF..",
+        "..FffffooffffF..",
+        "..FFFffooffFFF..",
+        ".FFFwwswwswwFFF.",
+        ".FFwswwswwswwFF.",
+        ".FFwwswwswwswFF.",
+        "..FFwwwwwwwwFF..",
+        "...FFFFFFFFFF...",
+        "....yy....yy....",
+        "................"
+      ]
+    }
   },
   {
     "id": "crow",
     "name": "Crow",
-    "icon": "🐦‍⬛",
-    "description": "Jumps in an L-shape like a chess knight, flying over anything in the way.",
-    "movement": [
-      {
-        "kind": "leap",
-        "offsets": [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]],
-        "canJumpOver": true
-      }
-    ],
-    "stats": { "health": 2, "attack": 1 },
-    "abilities": []
+    "description": "Sneaky trickster. Lobs a pebble over anything: 1 damage where it lands, and everything around it scatters.",
+    "movement": [{ "kind": "step", "directions": "orthogonal", "maxSteps": 3, "canJumpOver": true }],
+    "attack": {
+      "name": "Pebble Drop",
+      "description": "Lob a pebble 2-4 tiles away in a straight line: 1 damage there, and birds next to it get pushed away.",
+      "shout": "CAW!",
+      "style": "lob",
+      "targeting": "artillery",
+      "minRange": 2,
+      "maxRange": 4,
+      "damage": 1,
+      "push": false,
+      "splashDamage": 0,
+      "splashPush": true
+    },
+    "stats": { "health": 3, "forageBonus": 1 },
+    "nicknames": ["Edgar", "Shiny Pete", "Mrs. Caw"],
+    "abilities": [],
+    "sprite": {
+      "mirror": true,
+      "palette": { "n": "#22222e", "N": "#34345a", "p": "#5a5a9a", "W": "#e8e8f0", "G": "#5a5a66" },
+      "pixels": [
+        "................",
+        "................",
+        ".........nnn....",
+        "........nnnnn...",
+        "........nnnWnGG.",
+        ".......nnnnnnGGG",
+        "......nnnnnnn...",
+        "....nnpNNnnnn...",
+        "..nnnpNNNNnnnn..",
+        ".nnnpNNNNNnnnn..",
+        "nnn.NNNNNnnnn...",
+        "nn....NNnnnn....",
+        "n......nnnn.....",
+        "........G.G.....",
+        ".......GG.GG....",
+        "................"
+      ]
+    }
   }
 ]

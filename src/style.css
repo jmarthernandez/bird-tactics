@@ -20,9 +20,10 @@ body {
   color: var(--text);
   font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
 }
-h1, h3 { font-family: ui-monospace, Menlo, Consolas, monospace; letter-spacing: 0.02em; }
-h1 { margin: 0 0 12px; font-size: 26px; }
-h3 { margin: 0 0 6px; font-size: 12px; text-transform: uppercase; color: var(--muted); }
+h1, h3, .whose, .turnnum, .birdname, .wintitle, button.primary, .tagline { font-family: "Press Start 2P", ui-monospace, monospace; }
+h1 { margin: 0 0 6px; font-size: 22px; color: var(--accent); text-shadow: 3px 3px 0 #000; }
+.tagline { margin: 0 0 16px; font-size: 9px; color: var(--muted); }
+h3 { margin: 0 0 8px; font-size: 9px; text-transform: uppercase; color: var(--muted); }
 a { color: var(--accent); }
 .muted { color: var(--muted); }
 .small { font-size: 12px; }
@@ -74,14 +75,27 @@ label { font-size: 12px; text-transform: uppercase; color: var(--muted); font-we
 /* Game layout */
 .game {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
+  grid-template-columns: minmax(0, 1fr) 330px;
   gap: 20px;
-  max-width: 1080px;
+  max-width: 1360px;
   margin: 0 auto;
   padding: 20px 16px;
 }
-.boardwrap { min-width: 0; display: flex; justify-content: center; align-items: flex-start; }
-.board { display: block; cursor: pointer; border: 2px solid var(--line); }
+.boardcol { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.boardwrap {
+  position: relative; min-width: 0; display: flex; justify-content: center; align-items: center;
+  background: radial-gradient(ellipse at center, #1f2a3a 0%, #0f131b 75%);
+  border: 2px solid var(--line); padding: 8px 0;
+}
+.board { display: block; cursor: pointer; image-rendering: pixelated; }
+.hoverline { min-height: 22px; padding: 4px 10px; background: var(--panel); border: 2px solid var(--line); font-size: 13px; }
+.help { line-height: 2; }
+.help b { color: var(--text); border: 1px solid var(--line); padding: 0 4px; }
+.overlay {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: rgba(10, 12, 18, 0.72); text-align: center; gap: 6px; padding: 16px;
+}
+.wintitle { font-size: 34px; text-shadow: 4px 4px 0 #000; }
 .side { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .side > section, .side > details { background: var(--panel); border: 2px solid var(--line); padding: 10px 12px; }
 .banner {
@@ -97,7 +111,7 @@ label { font-size: 12px; text-transform: uppercase; color: var(--muted); font-we
 .turn.blue { border-left-color: var(--blue); }
 .turn.red { border-left-color: var(--red); }
 .turnnum { font: 700 12px ui-monospace, Menlo, monospace; color: var(--muted); text-transform: uppercase; }
-.whose { font-size: 22px; font-weight: 800; }
+.whose { font-size: 15px; margin: 6px 0; }
 .turn.blue .whose { color: var(--blue); }
 .turn.red .whose { color: var(--red); }
 .mode { font-size: 12px; color: var(--muted); }
@@ -110,15 +124,32 @@ label { font-size: 12px; text-transform: uppercase; color: var(--muted); font-we
 .buttons { display: flex; gap: 8px; }
 .buttons button { flex: 1; padding: 10px; }
 
-.info p { margin: 4px 0; }
-.birdname { font-weight: 800; font-size: 17px; }
+.info p { margin: 6px 0; }
+.birdhead { display: flex; gap: 12px; align-items: center; }
+.portrait { width: 72px; height: 72px; image-rendering: pixelated; background: #10141c; border: 2px solid var(--line); }
+.portrait.blue { border-color: var(--blue); }
+.portrait.red { border-color: var(--red); }
+.birdname { font-size: 11px; margin-bottom: 4px; }
+.hp { margin-top: 4px; display: flex; align-items: center; gap: 2px; }
+.pip { display: inline-block; width: 10px; height: 10px; background: #5a1e28; border: 2px solid #141018; }
+.pip.on { background: #5fe36b; }
+.fed { color: #f08aa6; margin-top: 2px; }
+.abilities { display: flex; flex-direction: column; gap: 6px; }
+.abilities button { display: flex; flex-direction: column; align-items: flex-start; text-align: left; gap: 2px; font-weight: 400; }
+.abilities button b { font-weight: 700; }
+.abilities button.attack.on { border-color: #ff8a6a; background: #3a1c18; }
+.abilities button.attack:not(:disabled):hover { border-color: #ff8a6a; }
+.abilities button.forage:not(:disabled) { border-color: #4f9a40; }
 .birdname.blue { color: var(--blue); }
 .birdname.red { color: var(--red); }
 
-.movelog { margin: 0; padding: 0; list-style: none; max-height: 160px; overflow-y: auto; font: 12px ui-monospace, Menlo, monospace; }
+.movelog { margin: 0; padding: 0; list-style: none; max-height: 200px; overflow-y: auto; font: 12px ui-monospace, Menlo, monospace; }
 .movelog li { padding: 2px 0 2px 8px; border-left: 3px solid var(--line); }
 .movelog li.blue { border-left-color: var(--blue); }
 .movelog li.red { border-left-color: var(--red); }
+.movelog li.endTurn { color: var(--muted); border-left-color: transparent; }
+.movelog li.attack { color: #ffb4a0; }
+.movelog li.forage { color: #a8e6a0; }
 
 .chatlog { max-height: 140px; overflow-y: auto; font-size: 14px; margin-bottom: 6px; overflow-wrap: anywhere; }
 .chatform, .row { display: flex; gap: 6px; }

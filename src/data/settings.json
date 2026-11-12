@@ -1,5 +1,13 @@
 {
   "board": { "width": 8, "height": 8 },
   "turnMode": "allUnits",
-  "startingTeam": ["sparrow", "hawk", "owl", "crow"]
+  "startingTeam": ["sparrow", "hawk", "owl", "crow"],
+  "bumpDamage": 1,
+  "forage": {
+    "berryHeal": 2,
+    "wormHeal": 1,
+    "wormDamageBonus": 1,
+    "berryRegrowTurns": 4,
+    "wormRegrowTurns": 4
+  }
 }

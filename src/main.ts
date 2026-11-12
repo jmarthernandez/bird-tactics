@@ -3,7 +3,7 @@
 
 import "./style.css";
 import { DEFAULT_CONFIG } from "./game/config";
-import { sideOf } from "./game/rules";
+import { createInitialState, sideOf } from "./game/rules";
 import { ClientSession } from "./net/client";
 import { HostSession, newSave } from "./net/host";
 import { MAX_NAME } from "./net/protocol";
@@ -39,7 +39,7 @@ function rememberName(input: HTMLInputElement): string | null {
 }
 
 function screen(...children: Array<Node | string | null>): void {
-  setChildren(app, h("div", { class: "card" }, h("h1", {}, "🪶 Bird Tactics"), ...children));
+  setChildren(app, h("div", { class: "card" }, h("h1", {}, "BIRD TACTICS"), h("p", { class: "tagline" }, "A feathery brawl in Mossy Hollow"), ...children));
 }
 
 // ---------- Lobby (host) ----------
@@ -73,7 +73,7 @@ async function showLobby(): Promise<void> {
     : null;
 
   screen(
-    h("p", { class: "muted" }, "Turn-based tactics with birds. Host a game and send the invite link to a friend."),
+    h("p", { class: "muted" }, "Shove, peck and screech your rivals into trees. Snack on berries and worms to heal. Last flock standing wins. Host a game and send the invite link to a friend."),
     h(
       "form",
       {
@@ -102,7 +102,8 @@ function startHost(save: SaveData): void {
   if (mySide) host.save.game.seats[mySide] = { playerId: me.playerId, name: me.name };
   currentHost = host;
 
-  const game = new GameScreen(host, hostPanel(host, (imported) => startHost(imported)));
+  const rematch = () => host.replaceGame(createInitialState(host.state.config, host.state.seats));
+  const game = new GameScreen(host, hostPanel(host, (imported) => startHost(imported)), rematch);
   setChildren(app, game.el);
   game.render();
   host.start();

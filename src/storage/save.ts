@@ -2,10 +2,11 @@
 // Stored in IndexedDB (automatic), and optionally exported/imported as .json
 // or autosaved to a real file on disk (Chromium only).
 
-import { validateConfig } from "../game/config";
+import { DEFAULT_CONFIG, validateConfig } from "../game/config";
+import { createInitialState } from "../game/rules";
 import type { GameState } from "../game/types";
 
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export interface ApprovedPlayer {
   playerId: string;
@@ -35,7 +36,15 @@ export function migrate(raw: unknown): SaveData {
   const version = s.schemaVersion;
   if (typeof version !== "number") throw new Error("Save file has no schemaVersion");
   if (version > SCHEMA_VERSION) throw new Error(`Save is from a newer version (schema ${version}) of the game`);
-  // (No older schemas exist yet.)
+
+  if (version === 1) {
+    // v1 was the movement-only prototype (no health, combat or food). Its board
+    // can't be converted, so keep the room, players and seats and start a
+    // fresh game on the new rules.
+    const old = s.game as { seats?: GameState["seats"] } | undefined;
+    s.game = createInitialState(DEFAULT_CONFIG, old?.seats ?? { blue: null, red: null });
+    s.schemaVersion = 2;
+  }
 
   const save = s as unknown as SaveData;
   if (typeof save.roomId !== "string" || !/^[a-f0-9]{32,}$/.test(save.roomId)) throw new Error("Save has an invalid roomId");
@@ -44,7 +53,7 @@ export function migrate(raw: unknown): SaveData {
   const configErrors = validateConfig(save.game.config);
   if (configErrors.length) throw new Error("Save's config is invalid: " + configErrors.join("; "));
   if (!Array.isArray(save.game.units) || !Array.isArray(save.game.history)) throw new Error("Save's game state is incomplete");
-  return { ...save, password: typeof save.password === "string" ? save.password : "" };
+  return { ...save, schemaVersion: SCHEMA_VERSION, password: typeof save.password === "string" ? save.password : "" };
 }
 
 // ---------- IndexedDB (autosave) ----------

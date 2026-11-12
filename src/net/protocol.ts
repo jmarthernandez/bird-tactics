@@ -4,7 +4,7 @@
 
 import type { Action, GameState, Side } from "../game/types";
 
-export const PROTOCOL_VERSION = 1;
+export const PROTOCOL_VERSION = 2; // v2: combat + foraging
 
 export type AuthStatus =
   | "ok" // approved; a welcome message follows
@@ -68,8 +68,15 @@ export function parseClientMessage(raw: unknown): ClientMessage | "badVersion" |
       const a = m.action;
       if (!isObj(a)) return null;
       if (a.type === "undo" || a.type === "endTurn") return { v, type: "action", action: { type: a.type } };
-      if (a.type === "move" && isStr(a.unitId, 64) && isObj(a.to) && isCoord(a.to.x) && isCoord(a.to.y)) {
+      const isPos = (p: unknown): p is { x: number; y: number } => isObj(p) && isCoord(p.x) && isCoord(p.y);
+      if (a.type === "move" && isStr(a.unitId, 64) && isPos(a.to)) {
         return { v, type: "action", action: { type: "move", unitId: a.unitId, to: { x: a.to.x, y: a.to.y } } };
+      }
+      if (a.type === "attack" && isStr(a.unitId, 64) && isPos(a.target)) {
+        return { v, type: "action", action: { type: "attack", unitId: a.unitId, target: { x: a.target.x, y: a.target.y } } };
+      }
+      if (a.type === "forage" && isStr(a.unitId, 64)) {
+        return { v, type: "action", action: { type: "forage", unitId: a.unitId } };
       }
       return null;
     }

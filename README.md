@@ -1,13 +1,12 @@
 # 🪶 Bird Tactics
 
-A turn-based grid tactics game where every unit is a bird, played peer-to-peer
-in the browser with a friend. There's no server of your own: one player
-**hosts** (their browser holds the game), the other **joins** with an invite link.
+A turn-based tactics brawl between two flocks of birds, in the spirit of
+Into the Breach: an isometric pixel-art board where **positioning and shoving
+matter more than raw damage**. Played peer-to-peer in the browser with a
+friend: one player **hosts** (their browser holds the game), the other
+**joins** with an invite link. No server of your own.
 
-This is the **skeleton**: networking, turns, saving, privacy, and movement.
-There's no combat or win condition yet.
-
----
+**Play it:** https://jmarthernandez.github.io/bird-tactics/
 
 ## 1. Run it on your computer
 
@@ -61,29 +60,45 @@ The game is then at `https://<your-username>.github.io/<repo-name>/`.
 The game autosaves in your browser after every move. Come back days later,
 click **Host Game (resume)**, and the same invite link works again.
 
-## How the birds move
+## How to play
 
-| Bird | Movement |
-|---|---|
-| 🐦 Sparrow | 1–2 steps in any direction, walking around obstacles |
-| 🦅 Hawk | Straight lines (up/down/left/right) up to 4, blocked by trees & birds |
-| 🦉 Owl | Diagonals up to 3, blocked by trees & birds |
-| 🐦‍⬛ Crow | Knight-style L jump, flies over anything |
+Each turn, every one of your birds may **fly, then act** (attack *or* forage).
+Click a bird → click a **blue** tile to fly → click a **red** tile to attack.
+Hover a red tile first to **preview** the damage and pushes. Knock out the
+whole enemy flock to win.
 
-No bird can land on a tree or another bird.
+| Bird | Moves | Attack |
+|---|---|---|
+| Sparrow (3 HP) | Hops 4 tiles, must go around obstacles | **Peck Flurry**: neighbor takes 1, pushed back a tile |
+| Hawk (4 HP) | Flies 3 tiles over anything | **Dive Bomb**: first bird in a straight line (up to 4) takes 2, pushed back |
+| Owl (5 HP) | Flies 2 tiles over anything | **Screech**: *all* 4 neighbors take 1 and get blown outward, friends included |
+| Crow (3 HP) | Flies 3 tiles over anything | **Pebble Drop**: lobbed 2-4 tiles over anything: 1 damage, and birds around the impact scatter |
+
+- **Shoving is the game.** A bird pushed into a tree, rock, bush, pond or another
+  bird takes **1 bump damage** (BONK), and so does a bird it's shoved into.
+- **Friendly fire is on.** Owls screech at everyone; crows' pebbles scatter your own birds too.
+- **Forage** instead of attacking to heal:
+  - 🍓 **Berry bush**: a hurt bird standing next to ripe berries gets +2 HP.
+  - 🪱 **Worm patch** (brown dirt): stand on it to get +1 HP **and** +1 damage on your next attack.
+  - Food grows back after 4 turns. Sparrows and crows are scavengers: +1 HP from any food.
+- **Undo** takes back a fly. Attacks and snacks are final.
+- `A` = attack, `F` = forage, `Esc` = cancel.
 
 ## Customizing (no code needed)
 
 All game data lives in `src/data/`:
 
-- `birds.json`: bird types. Each has `movement` patterns:
+- `birds.json`: bird types, including their **pixel art** (`sprite.pixels` is a
+  grid of letters, `sprite.palette` maps each letter to a color). Each bird has an
+  `attack` (`targeting`: `adjacent`, `projectile`, `artillery` or `self`; `damage`,
+  `push`, `splashDamage`, `splashPush`) and `movement` patterns:
   - `"step"`: walk up to `maxSteps` tiles one at a time (`directions`: `"orthogonal"`, `"diagonal"`, `"all"`, or a list like `[[1,0],[0,1]]`)
   - `"slide"`: straight lines up to `maxRange`
   - `"leap"`: jump to fixed `offsets` like `[[1,2],[2,1]]`
   - `canJumpOver`: `true` lets the bird pass over trees/birds
-  - `stats` and `abilities` are placeholders for combat later
-- `map.json`: the board, one text row per line (`.` = open, `T` = tree)
-- `settings.json`: board size, `turnMode` (`"allUnits"` = move every bird, or `"oneUnit"` = chess-style one move per turn), starting team
+  - `stats.health`, `stats.forageBonus`, and `nicknames`; `abilities` is a placeholder for later
+- `map.json`: the board, one text row per line (`.` grass, `T` tree, `R` rock, `~` pond, `B` berry bush, `d` worm patch)
+- `settings.json`: board size, `turnMode` (`"allUnits"` = every bird acts, or `"oneUnit"` = one bird per turn), starting team, `bumpDamage`, and food settings
 
 The host can also change these mid-session without editing files: **Host settings →
 Download Current Config**, edit the JSON, then **Load Config** (this starts a new game).
@@ -112,14 +127,18 @@ src/
   game/
     types.ts       all shared types: config, state, actions
     config.ts      default config + config validation
-    rules.ts       pure rules: getValidMoves, applyAction, createInitialState
-    rules.test.ts  movement & turn tests (npm test)
+    rules.ts       pure rules: movement, attacks & pushes, foraging, turns, winning
+    rules.test.ts  rules tests (npm test)
   net/
     protocol.ts    message types + validation, PROTOCOL_VERSION
     host.ts        host: auth, approval, validates & broadcasts actions, autosave
     client.ts      joiner: sends actions, shows host's state, auto-reconnect
   storage/         IndexedDB saves, export/import, file link, migrate(); player identity
-  ui/              canvas board, game screen, host settings panel
+  ui/
+    board.ts       isometric pixel-art board, animations, attack previews
+    sprites.ts     pixel-art helpers + terrain art (trees, rocks, bushes)
+    sfx.ts         tiny synthesized sound effects
+    gameScreen.ts  the game screen; hostPanel.ts host settings
   main.ts          screens & routing
 ```
 
